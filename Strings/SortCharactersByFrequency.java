@@ -1,33 +1,22 @@
-import java.util.HashMap;
-import java.util.PriorityQueue;
-
 class SortCharactersByFrequency{
-    private static String frequencySort(String s){
-        HashMap<Character, Integer> map = new HashMap<>();
-        for(char c : s.toCharArray()){
-            map.put(c, map.getOrDefault(c, 0)+1);
-        }
+public String frequencySort(String s) {
+       HashMap<Character, Integer> map = new HashMap<>();
 
-        PriorityQueue<Map.Entry<Character,Integer>> maxHeap = new PriorityQueue<>((a,b) -> b.getValue() - a.getValue());
+       for(char c : s.toCharArray()){
+        map.put(c, map.getOrDefault(c,0)+1);
+       }
 
-        maxHeap.addAll(map.entrySet());
+       PriorityQueue<Map.Entry<Character, Integer>> maxHeap = new PriorityQueue<>((a,b) -> b.getValue() - a.getValue());
 
-        StringBuilder result = new StringBuilder();
-        while(!maxHeap.isEmpty()){
-            Map.Entry<Character, Integer> entry = maxHeap.poll();
-            char c = entry.getKey();
-            int frequency = entry.getValue();
-            for(int i = 0; i < frequency; i++){
-                result.append(c);
-            }
-        }
+       for(HashMap.Entry<Character, Integer> entry : map.entrySet()){
+        maxHeap.offer(entry);
+       }
 
-        return result.toString();
-    }
-    public static void main(String[] args) {
-        String s = "tree";
-        String res = frequencySort(s);
-
-        System.out.println(res);
+       StringBuilder result = new StringBuilder();
+       while(!maxHeap.isEmpty()){
+        Map.Entry<Character, Integer> entry = maxHeap.poll();
+        result.append(String.valueOf(entry.getKey()).repeat(entry.getValue()));
+       }
+       return result.toString();
     }
 }
