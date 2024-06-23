@@ -1,3 +1,5 @@
+package Arrays;
+
 class PatchingArray {
     public int minPatches(int[] nums, int n) {
         long maxReach = 0;
