@@ -1,4 +1,4 @@
-class Solution {
+class MinimumAbsoluteDifference {
     private int min;
     private TreeNode prev;
 
