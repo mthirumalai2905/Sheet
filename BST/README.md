@@ -17,3 +17,106 @@ Initial Rotation Count: Calculate the number of nodes to be placed at the bottom
 Initial Rotations: Perform the necessary number of left rotations to create the bottom-most level.
 Subsequent Rotations: After the initial rotations, continue to perform left rotations on each level of the tree, reducing the height by half each time.
 Repeat: Continue until the tree is balanced
+
+```java
+public class DSW {
+    static class TreeNode {
+        int val;
+        TreeNode left, right;
+
+        TreeNode(int val) {
+            this.val = val;
+            left = right = null;
+        }
+    }
+
+    public static TreeNode balanceBST(TreeNode root) {
+        if (root == null) return null;
+
+        TreeNode pseudoRoot = new TreeNode(0);
+        pseudoRoot.right = root;
+
+        int size = createVine(pseudoRoot);
+        balanceVine(pseudoRoot, size);
+
+        return pseudoRoot.right;
+    }
+
+    private static int createVine(TreeNode root) {
+        TreeNode tail = root;
+        TreeNode remainder = tail.right;
+        int size = 0;
+
+        while (remainder != null) {
+            if (remainder.left == null) {
+                tail = remainder;
+                remainder = remainder.right;
+                size++;
+            } else {
+                TreeNode temp = remainder.left;
+                remainder.left = temp.right;
+                temp.right = remainder;
+                remainder = temp;
+                tail.right = temp;
+            }
+        }
+
+        return size;
+    }
+
+    private static void balanceVine(TreeNode root, int size) {
+        int m = greatestPowerOf2LessThan(size + 1) - 1;
+        compress(root, size - m);
+
+        while (m > 1) {
+            m /= 2;
+            compress(root, m);
+        }
+    }
+
+    private static int greatestPowerOf2LessThan(int n) {
+        int x = Integer.highestOneBit(n);
+        return (x == n) ? x : x / 2;
+    }
+
+    private static void compress(TreeNode root, int count) {
+        TreeNode scanner = root;
+
+        for (int i = 0; i < count; i++) {
+            TreeNode child = scanner.right;
+            scanner.right = child.right;
+            scanner = scanner.right;
+            child.right = scanner.left;
+            scanner.left = child;
+        }
+    }
+
+    // Utility function to print in-order traversal of the tree
+    public static void inorderTraversal(TreeNode root) {
+        if (root != null) {
+            inorderTraversal(root.left);
+            System.out.print(root.val + " ");
+            inorderTraversal(root.right);
+        }
+    }
+
+    // Example usage
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(10);
+        root.left = new TreeNode(5);
+        root.right = new TreeNode(20);
+        root.left.left = new TreeNode(1);
+        root.left.right = new TreeNode(8);
+        root.right.right = new TreeNode(30);
+
+        System.out.println("Original BST (in-order):");
+        inorderTraversal(root);
+        System.out.println();
+
+        root = balanceBST(root);
+
+        System.out.println("Balanced BST (in-order):");
+        inorderTraversal(root);
+    }
+}
+```
