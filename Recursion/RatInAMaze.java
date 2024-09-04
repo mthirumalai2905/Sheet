@@ -1,44 +1,48 @@
-class RatInAMaze {
-    static ArrayList<String> result = new ArrayList<>();
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    public static void solve(int i, int j, int[][] m, int n, String temp) {
-        // Boundary check and check if cell is already visited or is blocked
-        if (i < 0 || j < 0 || i >= n || j >= n || m[i][j] == 0) {
-            return;
+class Solution {
+
+    public ArrayList<String> findPath(int[][] mat) {
+        List<String> paths = new ArrayList<>();
+        int n = mat.length;
+        if (mat[0][0] == 0) {
+            return new ArrayList<>();
         }
-
-        // If the destination is reached, add the path to the result
-        if (i == n - 1 && j == n - 1) {
-            result.add(temp);
-            return;
-        }
-
-        // Mark the cell as visited
-        m[i][j] = 0;
-
-        // Move Down
-        solve(i + 1, j, m, n, temp + "D");
-
-        // Move Right
-        solve(i, j + 1, m, n, temp + "R");
-
-        // Move Up
-        solve(i - 1, j, m, n, temp + "U");
-
-        // Move Left
-        solve(i, j - 1, m, n, temp + "L");
-
-        // Unmark the cell (backtrack)
-        m[i][j] = 1;
+        findPaths(mat, n, 0, 0, "", paths);
+        Collections.sort(paths);
+        return new ArrayList<>(paths);
     }
 
-    public static ArrayList<String> findPath(int[][] m, int n) {
-        // Clear the result list for fresh invocation
-        result.clear();
+    private static void findPaths(int[][] mat, int n, int i, int j, String pathSoFar, List<String> paths) {
+        if (i == n - 1 && j == n - 1) {
+            paths.add(pathSoFar);
+            return;
+        }
 
-        // Initial call to solve function
-        solve(0, 0, m, n, "");
+        mat[i][j] = 0;
 
-        return result;
+        if (isSafe(mat, n, i + 1, j)) {
+            findPaths(mat, n, i + 1, j, pathSoFar + "D", paths);
+        }
+
+        if (isSafe(mat, n, i, j + 1)) {
+            findPaths(mat, n, i, j + 1, pathSoFar + "R", paths);
+        }
+
+        if (isSafe(mat, n, i - 1, j)) {
+            findPaths(mat, n, i - 1, j, pathSoFar + "U", paths);
+        }
+
+        if (isSafe(mat, n, i, j - 1)) {
+            findPaths(mat, n, i, j - 1, pathSoFar + "L", paths);
+        }
+
+        mat[i][j] = 1;
+    }
+
+    private static boolean isSafe(int[][] mat, int n, int i, int j) {
+        return (i >= 0 && i < n && j >= 0 && j < n && mat[i][j] == 1);
     }
 }
