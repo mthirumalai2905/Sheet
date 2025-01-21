@@ -4,6 +4,7 @@ class FindLowerBound {
     int ans = n;
     int low = 0, high = n - 1;
 
+
     while (low <= high) {
       int mid = (low + high) / 2;
 
